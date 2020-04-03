@@ -17,12 +17,13 @@ class Parser {
             for (i in 0 until nFlights) {
                 val flightEntryString = reader.readLine()
                 val flightEntryData = flightEntryString.split(",".toRegex()).toTypedArray()
-                flightEntries.add(FlightEntry(
-                    timestamp = flightEntryData[0].toInt(),
-                    lat = flightEntryData[1].toFloat(),
-                    long = flightEntryData[2].toFloat(),
-                    altitude = flightEntryData[3].toFloat()
-                ))
+                flightEntries.add(
+                    FlightEntry(
+                        lat = flightEntryData[1].toDouble(),
+                        long = flightEntryData[2].toDouble(),
+                        altitude = flightEntryData[3].toDouble()
+                    )
+                )
             }
             return Input(
                 nFlights,
@@ -38,8 +39,7 @@ data class Input(
 )
 
 data class FlightEntry(
-    val timestamp: Int,
-    val lat: Float,
-    val long: Float,
-    val altitude: Float
+    val lat: Double,
+    val long: Double,
+    val altitude: Double
 )
