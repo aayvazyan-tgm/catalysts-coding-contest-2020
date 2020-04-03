@@ -2,12 +2,12 @@ import java.io.File
 
 class Main {
     val files = listOf(
-         "level2_example.in"
-        ,"level2_1.in"
-        , "level2_2.in"
-        , "level2_3.in"
-        , "level2_4.in"
-        , "level2_5.in"
+         "level3_1.in"
+        ,"level3_2.in"
+        , "level3_3.in"
+        , "level3_4.in"
+        , "level3_5.in"
+        , "level3_example.in"
     )
 
     constructor() {

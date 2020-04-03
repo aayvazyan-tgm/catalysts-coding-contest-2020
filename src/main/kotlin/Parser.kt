@@ -19,9 +19,9 @@ class Parser {
                 val flightEntryData = flightEntryString.split(",".toRegex()).toTypedArray()
                 flightEntries.add(
                     FlightEntry(
-                        lat = flightEntryData[1].toDouble(),
-                        long = flightEntryData[2].toDouble(),
-                        altitude = flightEntryData[3].toDouble()
+                        lat = flightEntryData[0].toDouble(),
+                        long = flightEntryData[1].toDouble(),
+                        altitude = flightEntryData[2].toDouble()
                     )
                 )
             }
