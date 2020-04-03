@@ -2,50 +2,38 @@ import java.math.RoundingMode
 
 class Solver {
     fun solve(input: Input): Result {
-        return Result(input.timeRequests.map { request ->
-            val flight = parseFlight(request.flightId)
-            val lowerTs = flight.data.findLast { request.timestamp > it.timestampOffset + flight.takeOffTimestamp }!!
-            val upperTs = flight.data.find { request.timestamp <= it.timestampOffset + flight.takeOffTimestamp }!!
+        input.transferRange
+        val flightData = input.flightIds.map { parseFlight(it) }
 
-            val to = upperTs.timestampOffset + flight.takeOffTimestamp
-            val from = lowerTs.timestampOffset + flight.takeOffTimestamp
+        input.flightIds.map { flugId ->
+            val flightData = flightData.filter { it.flightId != flugId }
+            flightData.forEach {
+                println(it)
+                //TODO compare all timestamps with each other and intepolate
+            }
+        }
 
-            val max = to - from
-            val act = to - request.timestamp
-
-
-            val pos = act.toDouble() / max.toDouble()
-
-
-            Coordinate(
-                linearInterpolate(upperTs.lat, lowerTs.lat, pos),
-                linearInterpolate(upperTs.long, lowerTs.long, pos),
-                linearInterpolate(upperTs.altitude, lowerTs.altitude, pos)
-            )
-        })
+    return Result(emptyList())
     }
 }
 
-data class Coordinate(
-    val lat: Double,
-    val long: Double,
-    val alt: Double
+data class FlightCollision(
+    val flugA: String,
+    val flugB: String,
+    val delayOfB: Int,
+    val timePeriod: String
 ) {
     override fun toString(): String {
-        return "$lat $long $alt"
+        return "$flugA $flugB $delayOfB $timePeriod"
     }
 }
 
 data class Result(
-    val coords: List<Coordinate>
+    val flightCollisions: List<FlightCollision>
 ) {
     override fun toString(): String {
-        return coords.joinToString("\n")
+        return flightCollisions.joinToString("\n")
     }
-}
-
-fun Double.round(decimals: Int): Double {
-    return this.toBigDecimal().setScale(decimals, RoundingMode.FLOOR).toDouble()
 }
 
 fun linearInterpolate(a: Double, b: Double, f: Double): Double {

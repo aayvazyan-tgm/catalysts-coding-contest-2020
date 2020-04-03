@@ -5,27 +5,17 @@ import kotlin.collections.ArrayList
 
 class Parser {
     fun parse(file: File): Input {
-        var line: String
-        var data: Array<String>
-
         BufferedReader(FileReader(file)).use { reader ->
-            line = reader.readLine()
-            data = line.split(" ".toRegex()).toTypedArray()
-            val nFlights = data[0].toInt()
-            val flightEntries: MutableList<TimeRequests> = ArrayList()
+            val transferRange = reader.readLine().toDouble()
+            val nFlights = reader.readLine().toInt()
+            val flightIds: MutableList<Int> = ArrayList()
             for (i in 0 until nFlights) {
-                val flightEntryString = reader.readLine()
-                val flightEntryData = flightEntryString.split(" ".toRegex()).toTypedArray()
-                flightEntries.add(
-                    TimeRequests(
-                        flightId = flightEntryData[0].toInt(),
-                        timestamp = flightEntryData[1].toInt()
-                    )
-                )
+                flightIds.add(reader.readLine().toInt())
             }
             return Input(
+                transferRange,
                 nFlights,
-                flightEntries
+                flightIds
             )
         }
     }
@@ -50,25 +40,18 @@ fun parseFlight(flightId: Int): FlightData {
                 )
             )
         }
-
-
-        return FlightData(startAirport, endAirport, takeOffTimestamp, nData, data)
-
-        //reader.readLine().split(" ".toRegex()).toTypedArray()
+        return FlightData(flightId, startAirport, endAirport, takeOffTimestamp, nData, data)
     }
 }
 
 data class Input(
+    val transferRange: Double,
     val nFlights: Int,
-    val timeRequests: List<TimeRequests>
-)
-
-data class TimeRequests(
-    val flightId: Int,
-    val timestamp: Int
+    val flightIds: List<Int>
 )
 
 data class FlightData(
+    val flightId: Int,
     val startAirport: String,
     val endAirport: String,
     val takeOffTimestamp: Int,

@@ -2,12 +2,12 @@ import java.io.File
 
 class Main {
     val files = listOf(
-         "level4_1.in"
-        ,"level4_2.in"
-        , "level4_3.in"
-        , "level4_4.in"
-        , "level4_5.in"
-        , "level4_example.in"
+        "level5_example.in"
+        , "level5_1.in"
+        , "level5_2.in"
+        , "level5_3.in"
+        , "level5_4.in"
+        , "level5_5.in"
     )
 
     constructor() {
@@ -17,7 +17,7 @@ class Main {
                 println("Starting $it")
                 val input = Parser().parse(File("input/$it"))
                 val result = Solver().solve(input)
-                printresult(result, File("output/sol_$it".dropLast(2)+"out"))
+                printresult(result, File("output/sol_$it".dropLast(2) + "out"))
                 println("Done with $it")
             }
     }
