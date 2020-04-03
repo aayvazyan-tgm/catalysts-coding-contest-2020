@@ -1,36 +1,43 @@
 import java.math.RoundingMode
-import kotlin.math.cos
-import kotlin.math.sin
 
 class Solver {
     fun solve(input: Input): Result {
-        val flightsForRes = input.flightEntries.map {
-            val cosLat = cos(it.lat * Math.PI / 180.0)
-            val sinLat = sin(it.lat * Math.PI / 180.0)
-            val cosLon = cos(it.long * Math.PI / 180.0)
-            val sinLon = sin(it.long * Math.PI / 180.0)
-            val rad = 6371.0 * 1000 + it.altitude
-            val x = rad * cosLat * cosLon
-            val y = rad * cosLat * sinLon
-            val z = rad * sinLat
+        return Result(input.timeRequests.map { request ->
+            val flight = parseFlight(request.flightId)
+            val lowerTs = flight.data.findLast { request.timestamp > it.timestampOffset + flight.takeOffTimestamp }!!
+            val upperTs = flight.data.find { request.timestamp <= it.timestampOffset + flight.takeOffTimestamp }!!
 
-            Coordinate(x.round(9),y.round(9),z.round(9))
-        }
-        return Result(flightsForRes)
+            val to = upperTs.timestampOffset + flight.takeOffTimestamp
+            val from = lowerTs.timestampOffset + flight.takeOffTimestamp
+
+            val max = to - from
+            val act = to - request.timestamp
+
+
+            val pos = act.toDouble() / max.toDouble()
+
+
+            Coordinate(
+                linearInterpolate(upperTs.lat, lowerTs.lat, pos),
+                linearInterpolate(upperTs.long, lowerTs.long, pos),
+                linearInterpolate(upperTs.altitude, lowerTs.altitude, pos)
+            )
+        })
     }
 }
+
 data class Coordinate(
-    val x:Double,
-    val y:Double,
-    val z:Double
-){
+    val lat: Double,
+    val long: Double,
+    val alt: Double
+) {
     override fun toString(): String {
-        return "$x $y $z"
+        return "$lat $long $alt"
     }
 }
 
 data class Result(
-    val coords:List<Coordinate>
+    val coords: List<Coordinate>
 ) {
     override fun toString(): String {
         return coords.joinToString("\n")
@@ -38,5 +45,9 @@ data class Result(
 }
 
 fun Double.round(decimals: Int): Double {
-    return  this.toBigDecimal().setScale(decimals, RoundingMode.FLOOR).toDouble()
+    return this.toBigDecimal().setScale(decimals, RoundingMode.FLOOR).toDouble()
+}
+
+fun linearInterpolate(a: Double, b: Double, f: Double): Double {
+    return a + f * (b - a)
 }
